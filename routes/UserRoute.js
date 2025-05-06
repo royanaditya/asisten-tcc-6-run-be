@@ -5,14 +5,25 @@ import {
   updateUser,
   deleteUser,
   getUserById,
+  loginHandler,
+  logout
 } from "../controllers/UserController.js";
+import { refreshToken } from "../controllers/RefreshToken.js";
+import { verifyToken } from "../middleware/VerifyToken.js";
 
 const router = express.Router();
 
-router.get("/users", getUsers);
-router.get("/users/:id", getUserById);
-router.post("/add-user", createUser);
-router.put("/edit-user/:id", updateUser);
+//endpoint akses token
+router.get('/token', refreshToken);
+//endpoin auth
+router.post('/login', loginHandler);
+router.delete('/logout', logout);
+
+//endpoint data biasa
+router.post("/register", createUser); //tambah user
+router.get("/users",verifyToken, getUsers);
+router.get("/users/:id", verifyToken,getUserById);
+router.put("/edit-user/:id", verifyToken,updateUser);
 router.delete("/delete-user/:id", deleteUser);
 
 export default router;
